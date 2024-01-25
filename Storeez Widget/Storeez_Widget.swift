@@ -45,10 +45,29 @@ struct StoreezWebViewWrapper: UIViewRepresentable {
     }
 }
 
+struct StoreezImagePlaceholder: View {
+    let imageWidth: CGFloat = 100
+    let imageHeight: CGFloat = 100
+    let imageStrokeColor: Color = Color.blue
+    
+    var body: some View {
+        Image(systemName: "ico_placeholder")
+            .resizable()
+            .scaledToFill()
+            .frame(width: imageWidth, height: imageHeight, alignment: .center)
+            .clipShape(Circle())
+            .overlay(
+                Circle().stroke(imageStrokeColor, lineWidth: 2)
+            )
+            .padding(10)
+    }
+}
+
 struct StoreezWidget: View {
     let widgetId: String
     let imageWidth: CGFloat = 100
     let imageHeight: CGFloat = 100
+    let imageStrokeColor: Color = Color.blue
     let textWidth: CGFloat = 100
     @State private var items: [StoreezStory] = []
     @State private var isWebViewPresented = false
@@ -76,30 +95,13 @@ struct StoreezWidget: View {
                                         isWebViewPresented = true
                                     }
                             } else if phase.error != nil {
-                                Image(systemName: "ico_placeholder")
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: imageWidth, height: imageHeight, alignment: .center)
-                                    .clipShape(Circle())
-                                    .overlay(
-                                        Circle().stroke(Color.blue, lineWidth: 2)
-                                    )
-                                    .padding(10)
+                                StoreezImagePlaceholder()
                                     .onTapGesture {
                                         selectedStoryURL = item.url
                                         isWebViewPresented = true
                                     }
                             } else {
-                                Image(systemName: "ico_placeholder")
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: imageWidth, height: imageHeight, alignment: .center)
-                                    .clipShape(Circle())
-                                    .overlay(
-                                        Circle().stroke(Color.blue, lineWidth: 2)
-                                    )
-                                    .padding(10)
-                                    .onTapGesture {
+                                StoreezImagePlaceholder().onTapGesture {
                                         selectedStoryURL = item.url
                                         isWebViewPresented = true
                                     }
