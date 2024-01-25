@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9636B9D02B62538E00791665 /* Storeez_Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9636B9CF2B62538E00791665 /* Storeez_Widget.swift */; };
+		9636BA012B6286BF00791665 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9636BA002B6286BE00791665 /* Package.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,7 @@
 /* Begin PBXFileReference section */
 		9636B9CC2B62538E00791665 /* libStoreez Widget.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libStoreez Widget.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9636B9CF2B62538E00791665 /* Storeez_Widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storeez_Widget.swift; sourceTree = "<group>"; };
+		9636BA002B6286BE00791665 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +43,7 @@
 		9636B9C32B62538E00791665 = {
 			isa = PBXGroup;
 			children = (
+				9636BA002B6286BE00791665 /* Package.swift */,
 				9636B9CE2B62538E00791665 /* Storeez Widget */,
 				9636B9CD2B62538E00791665 /* Products */,
 			);
@@ -120,6 +123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9636BA012B6286BF00791665 /* Package.swift in Sources */,
 				9636B9D02B62538E00791665 /* Storeez_Widget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

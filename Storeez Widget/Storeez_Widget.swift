@@ -34,6 +34,7 @@ struct StoreezWebViewWrapper: UIViewRepresentable {
     func makeUIView(context: Context) -> WKWebView {
         let webConfiguration = WKWebViewConfiguration()
         webConfiguration.allowsInlineMediaPlayback = true
+        webConfiguration.mediaTypesRequiringUserActionForPlayback = []
         let webView = WKWebView(frame: .zero, configuration: webConfiguration)
         webView.load(URLRequest(url: url))
         return webView
@@ -63,7 +64,7 @@ struct StoreezImagePlaceholder: View {
     }
 }
 
-struct StoreezWidget: View {
+public struct StoreezWidget: View {
     let widgetId: String
     let imageWidth: CGFloat = 100
     let imageHeight: CGFloat = 100
@@ -73,7 +74,7 @@ struct StoreezWidget: View {
     @State private var isWebViewPresented = false
     @State private var selectedStoryURL: String = "https://google.com"
         
-    var body: some View {
+    public var body: some View {
         ScrollView(.horizontal) {
             HStack {
                 ForEach(items, id: \.id) { item in
@@ -131,7 +132,7 @@ struct StoreezWidget: View {
 
 }
 
-class StoreezApi {
+public class StoreezApi {
     func getWidgetFromAPI(widgetId: String, completion: @escaping ([StoreezStory]?) -> Void) {
         if let url = URL(string: "https://api.storeez.app/widget/" + widgetId) {
             URLSession.shared.dataTask(with: url) { data, response, error in
