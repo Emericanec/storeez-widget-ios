@@ -4,7 +4,7 @@ import SwiftUI
 import WebKit
 
 #if os(iOS)
-struct StoreezStory: Codable {
+public struct StoreezStory: Codable {
     let id: String
     let url: String
     let title: String
@@ -15,18 +15,16 @@ struct StoreezWidgetData: Codable {
     let stories: [StoreezStory]
 }
 
-@available(macOS 13.00, *)
-struct StoreezWebView: View {
+@available(macOS 15.00, *)
+public struct StoreezWebView: View {
     @Binding var url: String
     
-    var body: some View {
-        StoreezWebViewWrapper(url: URL(string: url)!).onAppear{
-            print(url)
-        }
+    public var body: some View {
+        StoreezWebViewWrapper(url: URL(string: url)!)
     }
 }
 
-@available(macOS 13.00, *)
+@available(macOS 15.00, *)
 struct StoreezWebViewWrapper: UIViewRepresentable {
     let url: URL
     
@@ -45,13 +43,13 @@ struct StoreezWebViewWrapper: UIViewRepresentable {
     }
 }
 
-@available(macOS 13.00, *)
+@available(macOS 15.00, *)
 struct StoreezImagePlaceholder: View {
     let imageWidth: CGFloat = 100
     let imageHeight: CGFloat = 100
     let imageStrokeColor: Color = Color.blue
     
-    @available(macOS 13.00, *)
+    @available(macOS 15.00, *)
     var body: some View {
         Image(systemName: "ico_placeholder")
             .resizable()
@@ -65,16 +63,24 @@ struct StoreezImagePlaceholder: View {
     }
 }
 
-@available(macOS 13.00, *)
+@available(macOS 15.00, *)
 public struct StoreezWidget: View {
     let widgetId: String
-    let imageWidth: CGFloat = 100
-    let imageHeight: CGFloat = 100
-    let imageStrokeColor: Color = Color.blue
-    let textWidth: CGFloat = 100
+    let imageWidth: CGFloat
+    let imageHeight: CGFloat
+    let imageStrokeColor: Color
+    let textWidth: CGFloat
     @State private var items: [StoreezStory] = []
     @State private var isWebViewPresented = false
     @State private var selectedStoryURL: String = "https://google.com"
+    
+    public init(widgetId: String, imageWidth: CGFloat = 100, imageHeight: CGFloat = 100, imageStrokeColor: Color = Color.blue, textWidth: CGFloat = 100) {
+        self.widgetId = widgetId
+        self.imageWidth = imageWidth
+        self.imageHeight = imageHeight
+        self.imageStrokeColor = imageStrokeColor
+        self.textWidth = textWidth
+    }
         
     public var body: some View {
         ScrollView(.horizontal) {
@@ -135,7 +141,7 @@ public struct StoreezWidget: View {
 }
 
 public class StoreezApi {
-    func getWidgetFromAPI(widgetId: String, completion: @escaping ([StoreezStory]?) -> Void) {
+    public func getWidgetFromAPI(widgetId: String, completion: @escaping ([StoreezStory]?) -> Void) {
         if let url = URL(string: "https://api.storeez.app/widget/" + widgetId) {
             URLSession.shared.dataTask(with: url) { data, response, error in
                 if let data = data {
