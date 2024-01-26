@@ -16,19 +16,30 @@ struct StoreezWidgetData: Codable {
 }
 
 @available(macOS 15.00, *)
-public struct StoreezWebView: View {
+ struct StoreezWebView: View {
     @Binding var url: String
+    @Binding var isPresented: Bool
     
-    public var body: some View {
-        StoreezWebViewWrapper(url: URL(string: url)!)
+    var body: some View {
+        NavigationView {
+            VStack {
+                StoreezWebViewWrapper(url: URL(string: url)!)
+            }
+            .navigationBarItems(trailing: Button(action: {
+                isPresented = false
+            }, label: {
+                Text("Close")
+            }))
+        }
+        
     }
 }
 
 @available(macOS 15.00, *)
-struct StoreezWebViewWrapper: UIViewRepresentable {
+public struct StoreezWebViewWrapper: UIViewRepresentable {
     let url: URL
     
-    func makeUIView(context: Context) -> WKWebView {
+    public func makeUIView(context: Context) -> WKWebView {
         let webConfiguration = WKWebViewConfiguration()
         webConfiguration.allowsInlineMediaPlayback = true
         webConfiguration.mediaTypesRequiringUserActionForPlayback = []
@@ -37,7 +48,7 @@ struct StoreezWebViewWrapper: UIViewRepresentable {
         return webView
     }
     
-    func updateUIView(_ uiView: WKWebView, context: Context) {
+    public func updateUIView(_ uiView: WKWebView, context: Context) {
         let request = URLRequest(url: url)
         uiView.load(request)
     }
@@ -129,7 +140,7 @@ public struct StoreezWidget: View {
             }
         }
         .fullScreenCover(isPresented: $isWebViewPresented) {
-            StoreezWebView(url: $selectedStoryURL)
+            StoreezWebView(url: $selectedStoryURL, isPresented: $isWebViewPresented)
         }
         .onAppear {
             StoreezApi().getWidgetFromAPI(widgetId: self.widgetId) { stories in
