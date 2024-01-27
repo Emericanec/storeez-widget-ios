@@ -40,9 +40,16 @@ public class WebViewNavigationDelegate: NSObject, WKNavigationDelegate {
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == .linkActivated {
             if let url = navigationAction.request.url {
-                // Open the URL in the default browser
-                UIApplication.shared.open(url)
-                decisionHandler(.cancel)
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    // Open the URL in the default browser for physical device
+                    UIApplication.shared.open(url)
+                    decisionHandler(.cancel)
+                } else {
+                    // Open the URL in the simulator
+                    let request = URLRequest(url: url)
+                    webView.load(request)
+                    decisionHandler(.cancel)
+                }
             } else {
                 decisionHandler(.allow)
             }
