@@ -36,7 +36,7 @@ struct StoreezWidgetData: Codable {
 }
 
 @available(macOS 15.00, *)
-public class WebViewNavigationDelegate: NSObject, WKNavigationDelegate {
+class WebViewNavigationDelegate: NSObject, WKNavigationDelegate {
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == .linkActivated {
             if let url = navigationAction.request.url {
@@ -59,10 +59,29 @@ public class WebViewNavigationDelegate: NSObject, WKNavigationDelegate {
     }
 }
 
+class WebViewUIDelegate: NSObject, WKUIDelegate {
+    public func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+        if let url = navigationAction.request.url {
+            if navigationAction.targetFrame == nil {
+                // Open the URL in the default browser
+                UIApplication.shared.open(url)
+            } else {
+                // Handle the URL based on your requirements
+                // For example, you can create a new WKWebView and load the URL
+                let newWebView = WKWebView(frame: .zero, configuration: configuration)
+                newWebView.load(URLRequest(url: url))
+                return newWebView
+            }
+        }
+        return nil
+    }
+}
+
 @available(macOS 15.00, *)
 public struct StoreezWebViewWrapper: UIViewRepresentable {
     let url: URL
     let navigationDelegate = WebViewNavigationDelegate()
+    let uiDelegate = WebViewUIDelegate()
     
     public func makeUIView(context: Context) -> WKWebView {
         let webConfiguration = WKWebViewConfiguration()
@@ -71,6 +90,7 @@ public struct StoreezWebViewWrapper: UIViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: webConfiguration)
         webView.allowsBackForwardNavigationGestures = true
         webView.navigationDelegate = navigationDelegate
+        webView.uiDelegate = uiDelegate
         webView.load(URLRequest(url: url))
         return webView
     }
