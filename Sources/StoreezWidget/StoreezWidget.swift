@@ -16,7 +16,7 @@ struct StoreezWidgetData: Codable {
 }
 
 @available(macOS 15.00, *)
- struct StoreezWebView: View {
+struct StoreezWebView: View {
     @Binding var url: String
     @Binding var isPresented: Bool
     
@@ -59,6 +59,7 @@ class WebViewNavigationDelegate: NSObject, WKNavigationDelegate {
     }
 }
 
+@available(macOS 15.00, *)
 class WebViewUIDelegate: NSObject, WKUIDelegate {
     public func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
         if let url = navigationAction.request.url {
@@ -118,6 +119,7 @@ struct StoreezImagePlaceholder: View {
                 Circle().stroke(imageStrokeColor, lineWidth: 2)
             )
             .padding(10)
+            .redacted(reason: .placeholder)
     }
 }
 
@@ -141,7 +143,7 @@ public struct StoreezWidget: View {
     }
         
     public var body: some View {
-        ScrollView(.horizontal) {
+        ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(items, id: \.id) { item in
                     VStack {
