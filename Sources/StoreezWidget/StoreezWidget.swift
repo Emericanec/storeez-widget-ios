@@ -69,6 +69,7 @@ public struct StoreezWebViewWrapper: UIViewRepresentable {
         webConfiguration.allowsInlineMediaPlayback = true
         webConfiguration.mediaTypesRequiringUserActionForPlayback = []
         let webView = WKWebView(frame: .zero, configuration: webConfiguration)
+        webView.allowsBackForwardNavigationGestures = true
         webView.navigationDelegate = navigationDelegate
         webView.load(URLRequest(url: url))
         return webView
