@@ -36,24 +36,8 @@ struct StoreezWidgetData: Codable {
 }
 
 @available(macOS 15.00, *)
-public struct StoreezWebViewWrapper: UIViewRepresentable {
-    let url: URL
-    
-    public func makeUIView(context: Context) -> WKWebView {
-        let webConfiguration = WKWebViewConfiguration()
-        webConfiguration.allowsInlineMediaPlayback = true
-        webConfiguration.mediaTypesRequiringUserActionForPlayback = []
-        let webView = WKWebView(frame: .zero, configuration: webConfiguration)
-        webView.load(URLRequest(url: url))
-        return webView
-    }
-    
-    public func updateUIView(_ uiView: WKWebView, context: Context) {
-        let request = URLRequest(url: url)
-        uiView.load(request)
-    }
-    
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+public class WebViewNavigationDelegate: NSObject, WKNavigationDelegate {
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == .linkActivated {
             if let url = navigationAction.request.url {
                 // Open the URL in the default browser
@@ -65,6 +49,27 @@ public struct StoreezWebViewWrapper: UIViewRepresentable {
         } else {
             decisionHandler(.allow)
         }
+    }
+}
+
+@available(macOS 15.00, *)
+public struct StoreezWebViewWrapper: UIViewRepresentable {
+    let url: URL
+    let navigationDelegate = WebViewNavigationDelegate()
+    
+    public func makeUIView(context: Context) -> WKWebView {
+        let webConfiguration = WKWebViewConfiguration()
+        webConfiguration.allowsInlineMediaPlayback = true
+        webConfiguration.mediaTypesRequiringUserActionForPlayback = []
+        let webView = WKWebView(frame: .zero, configuration: webConfiguration)
+        webView.navigationDelegate = navigationDelegate
+        webView.load(URLRequest(url: url))
+        return webView
+    }
+    
+    public func updateUIView(_ uiView: WKWebView, context: Context) {
+        let request = URLRequest(url: url)
+        uiView.load(request)
     }
 }
 
