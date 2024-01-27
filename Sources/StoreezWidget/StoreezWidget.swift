@@ -52,6 +52,20 @@ public struct StoreezWebViewWrapper: UIViewRepresentable {
         let request = URLRequest(url: url)
         uiView.load(request)
     }
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if navigationAction.navigationType == .linkActivated {
+            if let url = navigationAction.request.url {
+                // Open the URL in the default browser
+                UIApplication.shared.open(url)
+                decisionHandler(.cancel)
+            } else {
+                decisionHandler(.allow)
+            }
+        } else {
+            decisionHandler(.allow)
+        }
+    }
 }
 
 @available(macOS 15.00, *)
