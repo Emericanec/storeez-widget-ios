@@ -23,7 +23,7 @@ struct StoreezWebView: View {
     var body: some View {
         NavigationView {
             VStack {
-                StoreezWebViewWrapper(url: URL(string: url)!)
+                StoreezWebViewWrapper(url: URL(string: url)!, isPresented: $isPresented)
             }
             .navigationBarItems(trailing: Button(action: {
                 isPresented = false
@@ -83,9 +83,14 @@ public struct StoreezWebViewWrapper: UIViewRepresentable {
     let url: URL
     let navigationDelegate = WebViewNavigationDelegate()
     let uiDelegate = WebViewUIDelegate()
+    @Binding var isPresented: Bool
     
     public func makeUIView(context: Context) -> WKWebView {
         let webConfiguration = WKWebViewConfiguration()
+        
+        let userContentController = WKUserContentController()
+        userContentController.add(context.coordinator, name: "closeWindow") // Add message handler
+        webConfiguration.userContentController = userContentController
         webConfiguration.allowsInlineMediaPlayback = true
         webConfiguration.mediaTypesRequiringUserActionForPlayback = []
         let webView = WKWebView(frame: .zero, configuration: webConfiguration)
@@ -100,6 +105,24 @@ public struct StoreezWebViewWrapper: UIViewRepresentable {
         let request = URLRequest(url: url)
         uiView.load(request)
     }
+    
+    public func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    public class Coordinator: NSObject, WKScriptMessageHandler {
+        var parent: StoreezWebViewWrapper
+
+        init(_ parent: StoreezWebViewWrapper) {
+            self.parent = parent
+        }
+
+        public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+            if message.name == "closeWindow" {
+                parent.isPresented = false;
+            }
+        }
+    }
 }
 
 @available(macOS 15.00, *)
@@ -110,7 +133,7 @@ struct StoreezImagePlaceholder: View {
     
     @available(macOS 15.00, *)
     var body: some View {
-        Image(systemName: "ico_placeholder")
+        Image(systemName: "info.circle.fill")
             .resizable()
             .scaledToFill()
             .frame(width: imageWidth, height: imageHeight, alignment: .center)
